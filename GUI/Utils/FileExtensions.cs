@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SteamDatabase.ValvePak;
+using ValvePak;
 using ValveResourceFormat;
 
 namespace GUI.Utils
@@ -13,7 +13,7 @@ namespace GUI.Utils
         private static readonly Dictionary<string, Resource> CachedResources = new Dictionary<string, Resource>();
 
         // http://stackoverflow.com/a/4975942/272647
-        public static string ToFileSizeString(this uint byteCount)
+        public static string ToFileSizeString(this ulong byteCount)
         {
             string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
             string result;
@@ -24,13 +24,19 @@ namespace GUI.Utils
             }
             else
             {
-                var absoluteByteCount = Math.Abs(byteCount);
+                var absoluteByteCount = Math.Abs((long)byteCount);
                 var place = Convert.ToInt32(Math.Floor(Math.Log(absoluteByteCount, 1024)));
                 var num = Math.Round(absoluteByteCount / Math.Pow(1024, place), 1);
-                result = string.Format("{0} {1}", Math.Sign(byteCount) * num, suf[place]);
+                result = string.Format("{0} {1}", Math.Sign((long)byteCount) * num, suf[place]);
+                // System.Windows.Forms.MessageBox.Show("Test: " + byteCount + ", " + Convert.ToInt64(byteCount) + ", " + ((long)byteCount)); -- all give the same result, so we're good
             }
 
             return result;
+        }
+
+        public static string ToFileSizeString(this uint byteCount)
+        {
+            return ToFileSizeString((ulong)byteCount);
         }
 
         public static void ClearCache()

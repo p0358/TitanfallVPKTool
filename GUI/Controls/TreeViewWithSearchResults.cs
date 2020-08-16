@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using GUI.Forms;
 using GUI.Utils;
-using SteamDatabase.ValvePak;
+using ValvePak;
 
 namespace GUI.Controls
 {
@@ -119,6 +120,12 @@ namespace GUI.Controls
                 }
             }
 
+            mainListView.Items.Clear();
+            foreach (TreeNode node in /*e.Node.Nodes*/control.Nodes)
+            {
+                AddNodeToListView(node);
+            }
+
             control.EndUpdate();
         }
 
@@ -219,7 +226,9 @@ namespace GUI.Controls
         private void TreeViewWithSearchResults_Load(object sender, EventArgs e)
         {
             mainListView.Columns.Add("Name");
-            mainListView.Columns.Add("Size");
+            //mainListView.Columns.Add("Size (packed)");
+            //mainListView.Columns.Add("Size (original)");
+            mainListView.Columns.Add("Size (original / compressed)");
             mainListView.Columns.Add("Type");
             mainListView.SmallImageList = imageList;
         }
@@ -235,8 +244,16 @@ namespace GUI.Controls
             if (node.Tag.GetType() == typeof(PackageEntry))
             {
                 var file = node.Tag as PackageEntry;
-                item.SubItems.Add(file.TotalLength.ToFileSizeString());
-                item.SubItems.Add(file.TypeName);
+                /*item.SubItems.Add(((uint)file.TotalLength).ToFileSizeString());
+                item.SubItems.Add(((uint)file.TotalOriginalLength).ToFileSizeString());*/
+                item.SubItems.Add(((uint)file.TotalOriginalLength).ToFileSizeString() + " / " + ((uint)file.TotalLength).ToFileSizeString());
+                HashSet<string> strings = new HashSet<string>();
+                var archive_indexes_string = "";
+                foreach (var part in file.Parts)
+                {
+                    strings.Add(part.ArchiveIndex.ToString());
+                }
+                item.SubItems.Add(file.TypeName + " (" + string.Join(", ", strings) + ")");
             }
             else if (node.Tag.GetType() == typeof(TreeViewFolder))
             {

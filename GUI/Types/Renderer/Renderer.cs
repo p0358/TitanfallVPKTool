@@ -8,7 +8,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using SteamDatabase.ValvePak;
+using ValvePak;
 using ValveResourceFormat;
 using ValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using ValveResourceFormat.KeyValues;

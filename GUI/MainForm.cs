@@ -19,7 +19,7 @@ using GUI.Utils;
 using OpenTK;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
-using SteamDatabase.ValvePak;
+using ValvePak;
 using ValveResourceFormat;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.KeyValues;
@@ -262,7 +262,17 @@ namespace GUI
                     // TODO: Update tab name
                     fileName = $"{fileName.Substring(0, fileName.Length - 8)}_dir.vpk";
 
-                    package.Read(fileName);
+                    if (File.Exists(fileName))
+                    {
+                        package.Read(fileName);
+                    }
+                    else
+                    {
+                        // TODO: check, it doesn't execute
+                        throw new Exception("Error: Did not find correct vpk dir file.\nYou probably want to open file ending with _dir.vpk and starting with xclient, where x is your locale.\n\nExample:\nenglishclient_mp_common.bsp.pak000_dir.vpk\ninstead of:\nclient_mp_common.bsp.pak000_000.vpk");
+                        return tab;
+                    }
+                    
                 }
 
                 // create a TreeView with search capabilities, register its events, and add it to the tab
@@ -429,7 +439,7 @@ namespace GUI
                         var world = new World(resource);
                         var worldmv = new Renderer(mainTabs, fileName, currentPackage, RenderSubject.World);
                         world.AddObjects(worldmv, fileName, currentPackage);
-
+                        
                         var worldmeshTab = new TabPage("MAP");
                         var worldglControl = worldmv.CreateGL();
                         worldmeshTab.Controls.Add(worldglControl);

@@ -2,7 +2,7 @@
 using System.Globalization;
 using GUI.Utils;
 using OpenTK;
-using SteamDatabase.ValvePak;
+using ValvePak;
 using ValveResourceFormat;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.ResourceTypes;
